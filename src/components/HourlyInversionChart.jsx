@@ -1,8 +1,13 @@
-export default function HourlyInversionChart({ hourlyData = [] }) {
-  if (!hourlyData || hourlyData.length === 0) return null;
+import { useMemo } from 'react';
 
-  // Find max AQI to scale the bars
-  const maxAqi = Math.max(...hourlyData.map(d => d.aqi), 400);
+export default function HourlyInversionChart({ hourlyData = [] }) {
+  // Find max AQI to scale the bars - memoized to prevent recalculation on parent re-renders
+  const maxAqi = useMemo(() => {
+    if (!hourlyData || hourlyData.length === 0) return 400;
+    return Math.max(...hourlyData.map((d) => d.aqi), 400);
+  }, [hourlyData]);
+
+  if (!hourlyData || hourlyData.length === 0) return null;
 
   return (
     <div className="glass-panel rounded-3xl p-6 border border-slate-800">
@@ -50,7 +55,7 @@ export default function HourlyInversionChart({ hourlyData = [] }) {
 
             return (
               <div
-                key={index}
+                key={d.hour ?? index}
                 className="flex-1 flex flex-col items-center justify-end h-full group relative cursor-pointer"
               >
                 {/* Tooltip on hover */}

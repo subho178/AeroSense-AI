@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   Send, 
   Bot, 
@@ -52,13 +52,25 @@ export default function AiChat({
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  }, []);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, isGenerating]);
+  }, [messages, isGenerating, scrollToBottom]);
+
+  // Reset chat welcome message when selected city changes
+  useEffect(() => {
+    setMessages([
+      {
+        id: `welcome-${city.id}`,
+        sender: 'assistant',
+        text: `Hello! I am **AeroSense AI Copilot**, your real-time winter smog and clean-air guide for **${city.name}**.\n\nCurrently, the local AQI stands at **${aqi}** ($PM_{2.5}: ${pm25}\\,\\mu g/m^3$, ${city.inversionRisk}). The safe sunlight ventilation window is **${city.ventilationWindow}**.\n\nAsk me anything about daily routines, child & asthma protection, indoor air quality hacks, DIY air purifiers, or sustainable clean commute alternatives!`,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ]);
+  }, [city.id, city.name, city.inversionRisk, city.ventilationWindow, aqi, pm25]);
 
   // Handle sending a message
   const handleSendMessage = async (textToSend) => {
@@ -131,9 +143,11 @@ export default function AiChat({
   };
 
   const handleCopy = (msg) => {
-    navigator.clipboard.writeText(msg.text);
-    setCopiedMsgId(msg.id);
-    setTimeout(() => setCopiedMsgId(null), 2000);
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(msg.text).catch(() => {});
+      setCopiedMsgId(msg.id);
+      setTimeout(() => setCopiedMsgId(null), 2000);
+    }
   };
 
   const handleResetChat = () => {

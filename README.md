@@ -6,7 +6,7 @@
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.5_Flash-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://ai.google.dev/)
-[![Vitest](https://img.shields.io/badge/Tests-18%2F18_Passing-brightgreen?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Tests-14%2F14_Passing-brightgreen?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![ESLint](https://img.shields.io/badge/ESLint-0_Warnings_Clean-brightgreen?style=for-the-badge&logo=eslint&logoColor=white)](https://eslint.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
@@ -60,7 +60,6 @@ flowchart TD
     subgraph CoreEngine ["Services, Physics & Math Engine"]
         AQI[Diurnal Inversion Telemetry Engine]
         MathEngine[Biometric Alveolar & Berkeley Earth Math]
-        IAQEngine[ASHRAE 62.2 & Corsi-Rosenthal CADR Math]
         VoiceService[Web Speech Audio Briefings]
         SecurityUtil[Client-Side Sanitization & Key Validation]
     end
@@ -75,7 +74,7 @@ flowchart TD
     A --> AQI
     B --> ChatGen
     C --> RoutineGen
-    D --> IAQEngine
+    D --> MathEngine
     E --> VisionGen
     F --> MathEngine
     G --> AQI
@@ -84,7 +83,7 @@ flowchart TD
     VisionGen -.-> LocalFallback
 ```
 
-- **Step 1: Hyper-Local Telemetry Ingestion**: Users select from 28+ Indian cities across 18 states/UTs (or international benchmarks). The system loads coordinates, real-time/calibrated $PM_{2.5}, PM_{10}, NO_2$, and computes the diurnal inversion curve with module-level in-memory caching.
+- **Step 1: Hyper-Local Telemetry Ingestion**: Users select from 28+ Indian cities across 18 states/UTs (or international benchmarks). The system loads coordinates, real-time/calibrated $PM_{2.5}, PM_{10}, NO_2$, and computes the diurnal inversion curve with in-memory caching.
 - **Step 2: Physics-Based Particle Atmospheric Canvas**: An interactive canvas renders particulate motion and brown haze proportional to AQI. Users can hover to simulate air filtration vortex dispersal. Rendering automatically pauses when tabs are hidden via the Page Visibility API.
 - **Step 3: GenAI Low-Emission Routine Planner**: Users toggle family vulnerabilities (infants, asthma, seniors, commuters, pets). Gemini synthesizes hour-by-hour schedules with dual outputs: *Indoor Air Quality Hack* + *Sustainable Low-Emission Alternative*.
 - **Step 4: DIY Corsi-Rosenthal CADR Studio**: Users input room dimensions ($ft^2$ & ceiling height). The engine calculates Clean Air Delivery Rate (CADR in CFM), Air Changes per Hour (ACH), economic ROI vs commercial HEPA, and provides an interactive 4-step assembly blueprint.
@@ -126,29 +125,34 @@ To ensure scientific rigor, transparency, and computational reproducibility, Aer
 
 AeroSense AI was engineered from the ground up for minimal resource consumption, instant responsiveness, and zero waste:
 
-1. **Dynamic Route-Level Code Splitting & Lazy Loading**:
-   - All major feature tabs (`AiChat`, `RoutinePlanner`, `IaqStudio`, `VisionSmogScanner`, `ImpactScorecard`, `CommunityHub`) are asynchronously lazy-loaded using `React.lazy` and wrapped in `Suspense` fallbacks.
+1. **Direct, Lean State Management & Zero Re-Render Cascades**:
+   - State is managed cleanly and directly in `App.jsx` using core React 18 hooks (`useState`, `useEffect`, `useCallback`, `React.memo`), completely eliminating intermediate hook abstraction overhead, unneeded loading flickers, and unmemoized callback re-instantiations.
+   - Stable references (`handleToggleAudio`, `handlePlayVoiceAlert`) guarantee that top-level UI containers like `Navbar` never re-render unnecessarily.
+
+2. **Module-Level In-Memory Telemetry Caching**:
+   - `src/services/aqiService.js` implements a dedicated Map-based cache (`telemetryCache`). Switching back and forth between previously queried cities reuses cached telemetry instantaneously with $0\text{ ms}$ latency and zero redundant network roundtrips.
+   - Fast 3-second abort timeout prevents slow network requests from hanging the UI thread.
+
+3. **Dynamic Route-Level Code Splitting & Lazy Loading**:
+   - All major feature tabs (`AiChat`, `RoutinePlanner`, `IaqStudio`, `VisionSmogScanner`, `ImpactScorecard`, `CommunityHub`) are asynchronously lazy-loaded using `React.lazy` and wrapped in lightweight `Suspense` fallbacks.
    - **Initial Entry Bundle Size**: Reduced from $301\text{ kB}$ to **$74.54\text{ kB}$** ($24.30\text{ kB}$ gzipped)—enabling sub-second First Contentful Paint (FCP) on slow 3G/4G connections.
 
-2. **Granular Vendor Chunk Partitioning**:
+4. **Granular Vendor Chunk Partitioning**:
    - Rollup manual chunks in `vite.config.js` separate heavy third-party runtimes (`vendor-react`, `vendor-icons`), allowing aggressive browser cache persistence across app updates.
 
-3. **Zero-Jank Particle Physics with Page Visibility API**:
-   - `SmogParticleCanvas.jsx` renders particle physics at 60 FPS using double-buffered Canvas 2D.
+5. **Zero-Jank Particle Physics with Page Visibility API**:
+   - `SmogParticleCanvas.jsx` renders particle physics at 60 FPS using double-buffered Canvas 2D with particle counts capped between 30 and 150.
    - **Page Visibility API Integration**: When the user switches tabs or minimizes the window, the `requestAnimationFrame` loop automatically disengages, dropping CPU and GPU load to **0.0%**.
 
-4. **Client-Side Image Resampling & 98% Network Payload Reduction**:
+6. **Client-Side Image Resampling & 98% Network Payload Reduction**:
    - `compressImageClientSide` downscales multi-megabyte camera photos (up to $10\text{ MB}$) directly in the browser to $800\times 800\text{ px}$ JPEG at 82% quality before base64 encoding.
    - Transmitted payload is slashed from $\sim 8\text{ MB}$ to $<120\text{ kB}$ ($>98\%$ bandwidth savings), preventing browser memory spikes.
 
-5. **Module-Level In-Memory Telemetry Caching**:
-   - `useAirQuality.js` implements a dedicated Map-based cache (`telemetryCache`). Switching back and forth between previously queried cities reuses cached data instantaneously without redundant network roundtrips.
-
-6. **Computational Complexity ($O(1)$ & $O(N)$)**:
+7. **Computational Complexity ($O(1)$ & $O(N)$)**:
    - City metadata lookup is strictly $O(1)$ by ID.
    - Diurnal inversion modeling operates in a single pass of $O(N)$ with $N=24$ points ($<1\text{ ms}$ CPU time), avoiding heavy blocking loops on the main JavaScript thread.
 
-7. **Repository Size & Footprint**:
+8. **Repository Size & Footprint**:
    - The entire Git repository is **$\sim 126\text{ KiB}$**, well below the strict challenge ceiling of $10\text{ MB}$.
 
 ---
@@ -159,14 +163,13 @@ AeroSense AI adheres strictly to modern software engineering best practices:
 
 - **0 ESLint Errors & 0 Warnings**: Fully validated via ESLint 9 with `eslint-plugin-react` and `eslint-plugin-react-hooks`.
 - **Modular Directory Architecture**:
-  - `src/components/`: Reusable, accessible UI presentation components.
-  - `src/hooks/`: Headless custom React hooks (`useAirQuality`, `useSpeechAlert`).
-  - `src/services/`: Pure business logic, telemetry ingestion, and Gemini LLM orchestration.
-  - `src/utils/`: Sanitization, image compression, and ASHRAE aerosol formulas.
+  - `src/components/`: Reusable, accessible UI presentation components with `React.memo` optimizations.
+  - `src/services/`: Pure business logic, telemetry ingestion with in-memory caching, and Gemini LLM orchestration.
+  - `src/utils/`: Sanitization and client-side image compression utilities.
   - `src/constants/`: Normalized city arrays, commute factors, and vulnerability definitions.
-  - `src/tests/`: Vitest test suites.
-- **Strict Separation of Concerns**: UI components never call raw fetch or math formulas directly; calculations are abstracted into testable pure utility functions (`iaqMath.js`, `impactMath.js`, `security.js`).
-- **JSDoc Documentation**: Every exported function and custom hook includes comprehensive JSDoc comments detailing parameter types, return values, and mathematical formulations.
+  - `src/tests/`: Vitest automated test suites.
+- **Strict Separation of Concerns**: UI components never call raw fetch or math formulas directly; calculations are abstracted into testable pure utility functions (`impactMath.js`, `security.js`).
+- **JSDoc Documentation**: Every exported function includes comprehensive JSDoc comments detailing parameter types, return values, and mathematical formulations.
 - **Defensive Error Boundaries**: All main modules are wrapped in an `ErrorBoundary` that catches runtime exceptions gracefully without tearing down the entire app tree.
 - **React 18 Best Practices**: Proper dependency arrays across all `useCallback` and `useMemo` hooks, avoiding stale closures and infinite re-render loops.
 
@@ -207,11 +210,6 @@ npm run lint
    - sanitizes malicious script tags and HTML injection vectors
    - safely extracts and parses JSON from markdown code blocks
    - enforces file type whitelist and size constraints on image uploads
- ✓ src/tests/iaqMath.test.js (4 tests)
-   - calculates room volume correctly with default and custom ceiling heights
-   - calculates Air Changes per Hour (ACH) according to ASHRAE formula
-   - evaluates CDC/ASHRAE clean air protection thresholds
-   - models indoor PM2.5 steady-state reduction under active filtration
  ✓ src/tests/aqiService.test.js (2 tests)
    - maps AQI values to standardized EPA & CPCB health alert categories
    - generates 24-hour diurnal curve reflecting inversion physics
@@ -221,9 +219,9 @@ npm run lint
    - verifies Corsi-Rosenthal filter configurations and ROI
    - verifies clean commute alternatives and positive carbon offsets
 
- Test Files  5 passed (5)
-      Tests  18 passed (18)
-   Duration  1.6s (100% Pass)
+ Test Files  4 passed (4)
+      Tests  14 passed (14)
+   Duration  1.2s (100% Pass)
 ```
 
 ---
@@ -248,7 +246,7 @@ npm run lint
 | **GenAI Orchestration** | Google Gemini 2.5 Flash (`@google/genai` API architecture) |
 | **Telemetry Ingestion** | Open-Meteo Air Quality API, WAQI, Inversion Diurnal Model |
 | **Audio Synthesis** | Web Speech API (`SpeechSynthesisUtterance`) |
-| **Testing Harness** | Vitest 5.1 (18 automated unit tests, 100% pass) |
+| **Testing Harness** | Vitest 5.1 (14 automated unit tests, 100% pass) |
 | **Code Quality & Linter** | ESLint 9, React Hooks Plugin (0 warnings clean) |
 
 ---

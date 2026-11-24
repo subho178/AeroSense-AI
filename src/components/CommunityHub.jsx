@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { 
   Users, 
   Copy, 
@@ -12,8 +12,9 @@ export default function CommunityHub({ city, aqi, pm25 }) {
   const [copiedAlert, setCopiedAlert] = useState(false);
   const [communityCount, setCommunityCount] = useState(120); // Participating families
 
-  // Neighborhood broadcast template
-  const alertBroadcastMessage = `🚨 [AeroSense Community Smog Alert] - ${city.name}${city.state ? ` (${city.state})` : ''}
+  // Neighborhood broadcast template - memoized to prevent re-creation
+  const alertBroadcastMessage = useMemo(() => {
+    return `🚨 [AeroSense Community Smog Alert] - ${city.name}${city.state ? ` (${city.state})` : ''}
 ━━━━━━━━━━━━━━━━━━━
 ⚠️ AQI Status: ${aqi} (Hazardous Winter Smog)
 🌫️ PM2.5 Level: ${pm25} µg/m³ (${(pm25/15).toFixed(0)}x WHO limit)
@@ -27,12 +28,15 @@ export default function CommunityHub({ city, aqi, pm25 }) {
 
 🌳 Collective Clean Air Action: We are currently saving ${Math.round(communityCount * 3.8)} kg CO2 daily together!
 #AeroSenseAI #CleanAirResilience`;
+  }, [city.name, city.state, city.ventilationWindow, aqi, pm25, communityCount]);
 
-  const handleCopyAlert = () => {
-    navigator.clipboard.writeText(alertBroadcastMessage);
-    setCopiedAlert(true);
-    setTimeout(() => setCopiedAlert(false), 2500);
-  };
+  const handleCopyAlert = useCallback(() => {
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(alertBroadcastMessage).catch(() => {});
+      setCopiedAlert(true);
+      setTimeout(() => setCopiedAlert(false), 2500);
+    }
+  }, [alertBroadcastMessage]);
 
   return (
     <div className="space-y-6">

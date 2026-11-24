@@ -1,8 +1,18 @@
+import { memo } from 'react';
 import { Wind, Volume2, VolumeX, Sparkles } from 'lucide-react';
 import { DEFAULT_CITIES } from '../constants/data';
 import { getAqiCategory } from '../services/aqiService';
 
-export default function Navbar({
+const NAV_TABS = [
+  { id: 'overview', label: 'Smog Intelligence' },
+  { id: 'chat', label: 'GenAI Copilot Chat', isAi: true },
+  { id: 'routine', label: 'Routine Planner' },
+  { id: 'iaq', label: 'IAQ Hacks & DIY Studio' },
+  { id: 'vision', label: 'Vision Smog Scanner' },
+  { id: 'impact', label: 'Impact & Community' },
+];
+
+function Navbar({
   selectedCity,
   onSelectCity,
   aqi,
@@ -14,15 +24,6 @@ export default function Navbar({
   onSelectTab
 }) {
   const category = getAqiCategory(aqi);
-
-  const tabs = [
-    { id: 'overview', label: 'Smog Intelligence' },
-    { id: 'chat', label: 'GenAI Copilot Chat', isAi: true },
-    { id: 'routine', label: 'Routine Planner' },
-    { id: 'iaq', label: 'IAQ Hacks & DIY Studio' },
-    { id: 'vision', label: 'Vision Smog Scanner' },
-    { id: 'impact', label: 'Impact & Community' },
-  ];
 
   return (
     <header className="sticky top-0 z-50 glass-panel border-b border-slate-800/80 px-4 lg:px-8 py-3">
@@ -62,7 +63,7 @@ export default function Navbar({
           aria-label="AeroSense primary feature navigation"
           className="flex items-center gap-1 overflow-x-auto max-w-full pb-1 md:pb-0 scrollbar-none"
         >
-          {tabs.map((tab) => (
+          {NAV_TABS.map((tab) => (
             <button
               key={tab.id}
               id={`tab-${tab.id}`}
@@ -140,3 +141,5 @@ export default function Navbar({
     </header>
   );
 }
+
+export default memo(Navbar);

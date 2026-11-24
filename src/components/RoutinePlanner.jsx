@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { 
   Sparkles, 
   Baby, 
@@ -33,6 +33,9 @@ export default function RoutinePlanner({ city, aqi, pm25, apiKey }) {
     }
   };
 
+  const configRef = useRef({ selectedVulnerabilities, commuteMode, dwellingType, apiKey, aqi, pm25 });
+  configRef.current = { selectedVulnerabilities, commuteMode, dwellingType, apiKey, aqi, pm25 };
+
   const handleGenerate = useCallback(async () => {
     setIsLoading(true);
     try {
@@ -53,10 +56,36 @@ export default function RoutinePlanner({ city, aqi, pm25, apiKey }) {
     }
   }, [city, aqi, pm25, selectedVulnerabilities, commuteMode, dwellingType, apiKey]);
 
-  // Generate on initial load or city change
+  // Generate on initial load or city change with cancellation to prevent memory leaks
   useEffect(() => {
-    handleGenerate();
-  }, [city?.id, handleGenerate]);
+    let isCancelled = false;
+    setIsLoading(true);
+    const cfg = configRef.current;
+
+    generateAILowEmissionRoutine({
+      city,
+      aqi: cfg.aqi,
+      pm25: cfg.pm25,
+      vulnerabilityProfiles: cfg.selectedVulnerabilities,
+      commuteMode: cfg.commuteMode,
+      homeType: cfg.dwellingType,
+      apiKey: cfg.apiKey
+    }).then(result => {
+      if (!isCancelled) {
+        setRoutineData(result);
+        setIsLoading(false);
+      }
+    }).catch(err => {
+      if (!isCancelled) {
+        console.error('Initial routine error:', err);
+        setIsLoading(false);
+      }
+    });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [city]);
 
   const iconMap = {
     Baby,

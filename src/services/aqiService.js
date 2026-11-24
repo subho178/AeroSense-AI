@@ -56,14 +56,24 @@ export function generateDiurnalCurve(baseAqi, basePm25) {
   return hours;
 }
 
+// Module-level in-memory cache to eliminate redundant network requests and maximize efficiency
+const telemetryCache = new Map();
+
 // Fetch live telemetry from Open-Meteo Air Quality API with graceful fallback to hyper-realistic calibrated data
 export async function fetchLiveCityAirQuality(city) {
+  if (!city || !city.id) return city;
+
+  // Instant response if city telemetry was previously resolved
+  if (telemetryCache.has(city.id)) {
+    return telemetryCache.get(city.id);
+  }
+
   try {
     const url = `https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${city.lat}&longitude=${city.lon}&current=us_aqi,pm2_5,pm10,nitrogen_dioxide&hourly=us_aqi,pm2_5&timezone=auto&forecast_days=2`;
     
-    // Quick timeout to keep UI snappy
+    // Quick 3-second abort timeout to ensure snappy UI interaction
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
 
     const res = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
@@ -76,7 +86,7 @@ export async function fetchLiveCityAirQuality(city) {
       const pm10 = Math.round(current.pm10 || city.basePm10);
       const no2 = Math.round(current.nitrogen_dioxide || city.baseNo2);
 
-      return {
+      const result = {
         ...city,
         isLive: true,
         baseAqi: aqi,
@@ -85,14 +95,20 @@ export async function fetchLiveCityAirQuality(city) {
         baseNo2: no2,
         hourly: generateDiurnalCurve(aqi, pm25)
       };
+
+      telemetryCache.set(city.id, result);
+      return result;
     }
   } catch (err) {
     console.warn(`Live telemetry unavailable for ${city.name}, using calibrated thermal-inversion model`, err);
   }
 
-  return {
+  const fallbackResult = {
     ...city,
     isLive: false,
     hourly: generateDiurnalCurve(city.baseAqi, city.basePm25)
   };
+
+  telemetryCache.set(city.id, fallbackResult);
+  return fallbackResult;
 }

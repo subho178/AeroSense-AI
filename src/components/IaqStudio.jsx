@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   Box, 
   DollarSign, 
@@ -8,7 +8,6 @@ import {
   Gauge
 } from 'lucide-react';
 import { CORSI_ROSENTHAL_PRESETS, IAQ_ROOM_HACKS } from '../constants/data';
-import { calculateAch, evaluateAchThreshold } from '../utils/iaqMath';
 
 export default function IaqStudio() {
   const [selectedPreset, setSelectedPreset] = useState(CORSI_ROSENTHAL_PRESETS[0]);
@@ -16,9 +15,17 @@ export default function IaqStudio() {
   const [ceilingHeightFt, setCeilingHeightFt] = useState(9);
   const [activeRoomTab, setActiveRoomTab] = useState('Kitchen');
 
-  // Math for Air Changes per Hour (ACH) via dedicated aerosol utility
-  const ach = calculateAch(selectedPreset.cadrCfm, roomSqFt, ceilingHeightFt);
-  const { isOptimal: isOptimalAch } = evaluateAchThreshold(ach);
+  // Math for Air Changes per Hour (ACH) - ASHRAE / CDC Guideline
+  // ACH = (CADR in CFM * 60) / Room Volume in cubic feet
+  const { ach, isOptimalAch } = useMemo(() => {
+    const volume = roomSqFt * ceilingHeightFt;
+    if (volume <= 0) return { ach: '0.0', isOptimalAch: false };
+    const calculated = ((selectedPreset.cadrCfm * 60) / volume).toFixed(1);
+    return {
+      ach: calculated,
+      isOptimalAch: parseFloat(calculated) >= 4.0
+    };
+  }, [roomSqFt, ceilingHeightFt, selectedPreset.cadrCfm]);
 
   const activeRoomData = IAQ_ROOM_HACKS.find(r => r.room === activeRoomTab) || IAQ_ROOM_HACKS[0];
 

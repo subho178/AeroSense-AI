@@ -1,4 +1,4 @@
-import { useState, useEffect, lazy, Suspense } from 'react';
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import AqiOverviewCard from './components/AqiOverviewCard';
 import HourlyInversionChart from './components/HourlyInversionChart';
@@ -6,9 +6,9 @@ import ApiKeyModal from './components/ApiKeyModal';
 import ErrorBoundary from './components/ErrorBoundary';
 
 import { DEFAULT_CITIES } from './constants';
-import { useAirQuality } from './hooks/useAirQuality';
-import { useSpeechAlert } from './hooks/useSpeechAlert';
+import { fetchLiveCityAirQuality } from './services/aqiService';
 import { getStoredApiKey } from './services/geminiService';
+import { speechService } from './services/speechService';
 import { Wind, Sparkles, Bot } from 'lucide-react';
 
 // Lazy-loaded tab components for maximum code-splitting and sub-50kB initial bundle
@@ -37,18 +37,50 @@ function LoadingFallback() {
  */
 export default function App() {
   const [selectedCity, setSelectedCity] = useState(DEFAULT_CITIES[0]);
+  const [cityData, setCityData] = useState(DEFAULT_CITIES[0]);
   const [activeTab, setActiveTab] = useState('overview');
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [hasCustomKey, setHasCustomKey] = useState(false);
+  const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isFloatingChatOpen, setIsFloatingChatOpen] = useState(false);
-
-  // Custom Hooks for state abstraction and code quality
-  const { cityData } = useAirQuality(selectedCity);
-  const { isAudioMuted, toggleAudio, playAdvisory } = useSpeechAlert(cityData);
 
   // Check stored API key on mount
   useEffect(() => {
     setHasCustomKey(Boolean(getStoredApiKey()));
+  }, []);
+
+  // Fetch telemetry when selected city changes with proper mount cancellation
+  useEffect(() => {
+    let isMounted = true;
+    fetchLiveCityAirQuality(selectedCity).then((data) => {
+      if (isMounted) {
+        setCityData(data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [selectedCity]);
+
+  // Voice alert synthesis - memoized to prevent re-creation
+  const handlePlayVoiceAlert = useCallback(() => {
+    if (isAudioMuted || !cityData) return;
+
+    const locationLabel = cityData.state ? `${cityData.name}, ${cityData.state}` : cityData.name;
+    const alertText = `AeroSense AI Winter Smog Advisory for ${locationLabel}. Current Air Quality Index is ${cityData.baseAqi}, which is in the severe hazardous category. Ground-level thermal inversion is actively trapping vehicular soot and particulate matter. Please keep exterior windows sealed until the midday ventilation window between ${cityData.ventilationWindow}. Run indoor Corsi-Rosenthal filtration or HEPA purifiers continuously, and ensure vulnerable individuals avoid morning outdoor exertion.`;
+
+    speechService.speak(alertText);
+  }, [cityData, isAudioMuted]);
+
+  // Audio mute toggling with stable callback reference
+  const handleToggleAudio = useCallback(() => {
+    setIsAudioMuted((prev) => {
+      const next = !prev;
+      if (next) {
+        speechService.stop();
+      }
+      return next;
+    });
   }, []);
 
   return (
@@ -61,7 +93,7 @@ export default function App() {
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
         hasCustomKey={hasCustomKey}
         isAudioMuted={isAudioMuted}
-        onToggleAudio={toggleAudio}
+        onToggleAudio={handleToggleAudio}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
       />
@@ -81,7 +113,7 @@ export default function App() {
               <div className="space-y-8 animate-in fade-in duration-300">
                 <AqiOverviewCard
                   city={cityData}
-                  onPlayVoiceAlert={playAdvisory}
+                  onPlayVoiceAlert={handlePlayVoiceAlert}
                 />
 
                 <HourlyInversionChart
