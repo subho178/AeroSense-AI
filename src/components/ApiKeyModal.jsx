@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { X, Sparkles, Key, CheckCircle, ExternalLink, ShieldCheck, AlertCircle } from 'lucide-react';
 import { getStoredApiKey, saveStoredApiKey } from '../services/geminiService';
 import { validateGeminiApiKey } from '../utils/security';
@@ -9,8 +9,6 @@ export default function ApiKeyModal({ isOpen, onClose, onKeySaved }) {
   const [errorMessage, setErrorMessage] = useState('');
 
   if (!isOpen) return null;
-
-  const isValid = !inputKey || validateGeminiApiKey(inputKey);
 
   const handleSave = () => {
     if (inputKey && !validateGeminiApiKey(inputKey)) {

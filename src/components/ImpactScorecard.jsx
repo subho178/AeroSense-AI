@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   BarChart3, 
   Cigarette, 
@@ -6,8 +6,6 @@ import {
   Leaf, 
   Trees, 
   Sliders, 
-  Sparkles,
-  Heart,
   TrendingDown,
   Info
 } from 'lucide-react';
@@ -18,7 +16,6 @@ export default function ImpactScorecard({ pm25 = 150 }) {
   const [electricHeatingHours, setElectricHeatingHours] = useState(5);
   const [metroTrips, setMetroTrips] = useState(6);
   const [indoorPurifierHours, setIndoorPurifierHours] = useState(10);
-  const [maskUsagePercent, setMaskUsagePercent] = useState(85);
 
   // Memoized math computations for maximum UI responsiveness
   const mitigatedIndoorPm25 = useMemo(() => Math.round(pm25 * 0.15), [pm25]);

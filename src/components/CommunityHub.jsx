@@ -1,18 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   Users, 
-  Share2, 
   Copy, 
   Check, 
-  MapPin, 
-  Sparkles, 
-  AlertCircle, 
-  TrendingUp, 
   Car, 
-  ShieldCheck, 
   MessageSquareShare 
 } from 'lucide-react';
-import { CLEAN_COMMUTE_ALTERNATIVES } from '../constants/data';
+import { CLEAN_COMMUTE_ALTERNATIVES } from '../constants';
 
 export default function CommunityHub({ city, aqi, pm25 }) {
   const [copiedAlert, setCopiedAlert] = useState(false);

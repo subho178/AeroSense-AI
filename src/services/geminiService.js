@@ -145,7 +145,7 @@ Format output strictly as JSON with this structure:
     }
     return parsed;
   } catch (err) {
-    console.log('Using optimized local neural engine for routine:', err.message);
+    console.info('Using optimized local neural engine for routine:', err.message);
     return getLocalOptimizedRoutine(city, aqi, pm25, vulnerabilityProfiles, commuteMode);
   }
 }
@@ -200,7 +200,7 @@ Return strictly JSON:
     }
     return parsed;
   } catch (err) {
-    console.log('Using local vision heuristic analyzer:', err.message);
+    console.info('Using local vision heuristic analyzer:', err.message);
     return getLocalVisionAnalysis(analysisType);
   }
 }
@@ -210,7 +210,6 @@ Return strictly JSON:
  */
 function getLocalOptimizedRoutine(city, aqi, pm25, vulnerabilities, commute) {
   const hasVulnerable = vulnerabilities.length > 0;
-  const isSevere = aqi > 250;
 
   return {
     summary: `Severe thermal inversion active in ${city.name}. Cold boundary layer traps ground emissions until midday. High-exposure outdoor activities must be shifted to the 13:00–15:30 solar ventilation window.`,

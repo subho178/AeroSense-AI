@@ -1,5 +1,4 @@
-import React from 'react';
-import { AlertOctagon, ShieldAlert, CloudFog, Thermometer, Droplets, Wind, Clock, Sparkles, Volume2 } from 'lucide-react';
+import { AlertOctagon, ShieldAlert, CloudFog, Thermometer, Droplets, Wind, Clock, Volume2 } from 'lucide-react';
 import { getAqiCategory } from '../services/aqiService';
 import SmogParticleCanvas from './SmogParticleCanvas';
 

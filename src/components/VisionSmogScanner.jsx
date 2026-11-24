@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   Camera, 
   Upload, 
   Sparkles, 
   CheckCircle2, 
   AlertTriangle, 
-  Eye, 
-  ShieldAlert, 
-  Info,
-  Maximize2,
-  RefreshCw
+  Eye
 } from 'lucide-react';
 import { analyzeSmogImageWithVision } from '../services/geminiService';
 import { validateImageUpload, compressImageClientSide } from '../utils/security';

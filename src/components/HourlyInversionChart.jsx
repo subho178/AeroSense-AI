@@ -1,6 +1,3 @@
-import React from 'react';
-import { Sun, Moon, AlertTriangle, CheckCircle2 } from 'lucide-react';
-
 export default function HourlyInversionChart({ hourlyData = [] }) {
   if (!hourlyData || hourlyData.length === 0) return null;
 
@@ -43,7 +40,7 @@ export default function HourlyInversionChart({ hourlyData = [] }) {
             const isSevere = d.aqi >= 300;
             const isUnhealthy = d.aqi >= 150 && !isSevere;
 
-            let barColor = isVent
+            const barColor = isVent
               ? 'bg-gradient-to-t from-emerald-600 to-teal-400 border-emerald-400'
               : isSevere
               ? 'bg-gradient-to-t from-rose-900 to-rose-600 border-rose-500'

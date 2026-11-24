@@ -1,21 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   Box, 
-  Wind, 
   DollarSign, 
-  Volume2, 
   CheckCircle2, 
-  Flame, 
-  BedDouble, 
-  Sofa, 
-  AlertCircle, 
   Sparkles, 
   Sliders, 
-  ShieldCheck, 
-  ChevronRight,
   Gauge
 } from 'lucide-react';
 import { CORSI_ROSENTHAL_PRESETS, IAQ_ROOM_HACKS } from '../constants/data';
+import { calculateAch, evaluateAchThreshold } from '../utils/iaqMath';
 
 export default function IaqStudio() {
   const [selectedPreset, setSelectedPreset] = useState(CORSI_ROSENTHAL_PRESETS[0]);
@@ -23,11 +16,9 @@ export default function IaqStudio() {
   const [ceilingHeightFt, setCeilingHeightFt] = useState(9);
   const [activeRoomTab, setActiveRoomTab] = useState('Kitchen');
 
-  // Math for Air Changes per Hour (ACH)
-  // ACH = (CADR in CFM * 60) / Room Volume in cubic feet
-  const roomVolumeCuFt = roomSqFt * ceilingHeightFt;
-  const ach = ((selectedPreset.cadrCfm * 60) / roomVolumeCuFt).toFixed(1);
-  const isOptimalAch = ach >= 4.0; // ASHRAE/CDC recommendation is > 4 to 6 ACH during epidemic/smog
+  // Math for Air Changes per Hour (ACH) via dedicated aerosol utility
+  const ach = calculateAch(selectedPreset.cadrCfm, roomSqFt, ceilingHeightFt);
+  const { isOptimal: isOptimalAch } = evaluateAchThreshold(ach);
 
   const activeRoomData = IAQ_ROOM_HACKS.find(r => r.room === activeRoomTab) || IAQ_ROOM_HACKS[0];
 

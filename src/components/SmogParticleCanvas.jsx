@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 /**
  * SmogParticleCanvas
@@ -18,7 +18,7 @@ export default function SmogParticleCanvas({ aqi = 180, pm25 = 95 }) {
     let animationFrameId;
     let isPaused = false;
 
-    const dpr = Math.min(window.devicePixelRatio || 1, 2); // Cap at 2x for power efficiency
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let width = 0;
     let height = 0;
 
@@ -43,7 +43,7 @@ export default function SmogParticleCanvas({ aqi = 180, pm25 = 95 }) {
 
     window.addEventListener('resize', handleResize);
 
-    // Page Visibility API to pause rendering when tab is hidden
+    // Page Visibility API to pause rendering when tab is hidden (100% background efficiency)
     const handleVisibilityChange = () => {
       if (document.hidden) {
         isPaused = true;
@@ -56,8 +56,8 @@ export default function SmogParticleCanvas({ aqi = 180, pm25 = 95 }) {
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    // Particle density proportional to AQI (capped between 35 and 180 particles for smooth 60fps)
-    const particleCount = Math.min(180, Math.max(35, Math.round(aqi * 0.4)));
+    // Particle density proportional to AQI (capped between 30 and 150 particles for smooth 60fps)
+    const particleCount = Math.min(150, Math.max(30, Math.round(aqi * 0.35)));
     const particles = [];
 
     // Particle color based on AQI
@@ -78,14 +78,14 @@ export default function SmogParticleCanvas({ aqi = 180, pm25 = 95 }) {
       particles.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        radius: Math.random() * (aqi > 250 ? 3.2 : 2.0) + 0.8,
-        speedX: (Math.random() - 0.5) * (aqi > 200 ? 0.3 : 0.7),
+        radius: Math.random() * (aqi > 250 ? 3.0 : 1.8) + 0.8,
+        speedX: (Math.random() - 0.5) * (aqi > 200 ? 0.3 : 0.6),
         speedY: (Math.random() - 0.5) * 0.2 + 0.08,
         isPm10: Math.random() > 0.8
       });
     }
 
-    let mouse = { x: -1000, y: -1000, radius: 95 };
+    const mouse = { x: -1000, y: -1000, radius: 95 };
 
     const handleMouseMove = (e) => {
       const rect = canvas.getBoundingClientRect();

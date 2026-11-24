@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   Sparkles, 
   Baby, 
@@ -10,11 +10,7 @@ import {
   ShieldCheck, 
   Leaf, 
   Cigarette, 
-  CheckCircle, 
-  AlertTriangle,
-  ArrowRight,
-  Flame,
-  Train
+  CheckCircle
 } from 'lucide-react';
 import { VULNERABILITY_PROFILES } from '../constants/data';
 import { generateAILowEmissionRoutine } from '../services/geminiService';
@@ -37,7 +33,7 @@ export default function RoutinePlanner({ city, aqi, pm25, apiKey }) {
     }
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = useCallback(async () => {
     setIsLoading(true);
     try {
       const result = await generateAILowEmissionRoutine({
@@ -55,14 +51,12 @@ export default function RoutinePlanner({ city, aqi, pm25, apiKey }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [city, aqi, pm25, selectedVulnerabilities, commuteMode, dwellingType, apiKey]);
 
-  // Generate on initial load if empty
-  React.useEffect(() => {
-    if (!routineData) {
-      handleGenerate();
-    }
-  }, [city.id]);
+  // Generate on initial load or city change
+  useEffect(() => {
+    handleGenerate();
+  }, [city?.id, handleGenerate]);
 
   const iconMap = {
     Baby,

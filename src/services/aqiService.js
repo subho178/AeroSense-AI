@@ -1,5 +1,4 @@
 // Open-Meteo & simulated real-time winter smog telemetry service
-import { DEFAULT_CITIES } from '../constants/data';
 
 export function getAqiCategory(aqi) {
   if (aqi <= 50) return { label: 'Good', color: 'text-emerald-400', bg: 'bg-emerald-500/15', border: 'border-emerald-500/30', badge: 'bg-emerald-500' };

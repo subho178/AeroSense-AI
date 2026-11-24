@@ -1,8 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { fetchLiveCityAirQuality } from '../services/aqiService';
 
+// Module-level in-memory cache to eliminate redundant network hits and CPU object thrashing
+const telemetryCache = new Map();
+
 /**
- * Custom React hook for hyper-local air quality telemetry.
+ * Custom React hook for hyper-local air quality telemetry with in-memory caching.
  * Automatically fetches live or calibrated data when city changes,
  * provides loading states, and supports manual telemetry refresh.
  * 
@@ -10,14 +13,23 @@ import { fetchLiveCityAirQuality } from '../services/aqiService';
  * @returns {{ cityData: Object, isLoading: boolean, refresh: Function }}
  */
 export function useAirQuality(selectedCity) {
-  const [cityData, setCityData] = useState(selectedCity);
+  const [cityData, setCityData] = useState(() => {
+    return telemetryCache.get(selectedCity.id) || selectedCity;
+  });
   const [isLoading, setIsLoading] = useState(false);
 
-  const loadTelemetry = useCallback(async (city) => {
+  const loadTelemetry = useCallback(async (city, force = false) => {
     if (!city) return;
+
+    if (!force && telemetryCache.has(city.id)) {
+      setCityData(telemetryCache.get(city.id));
+      return;
+    }
+
     setIsLoading(true);
     try {
       const data = await fetchLiveCityAirQuality(city);
+      telemetryCache.set(city.id, data);
       setCityData(data);
     } catch (err) {
       console.warn('Failed to load telemetry:', err);
@@ -37,7 +49,7 @@ export function useAirQuality(selectedCity) {
   }, [selectedCity, loadTelemetry]);
 
   const refresh = useCallback(() => {
-    return loadTelemetry(selectedCity);
+    return loadTelemetry(selectedCity, true);
   }, [selectedCity, loadTelemetry]);
 
   return {

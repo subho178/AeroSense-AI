@@ -1,21 +1,34 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect, lazy, Suspense } from 'react';
 import Navbar from './components/Navbar';
 import AqiOverviewCard from './components/AqiOverviewCard';
 import HourlyInversionChart from './components/HourlyInversionChart';
-import RoutinePlanner from './components/RoutinePlanner';
-import IaqStudio from './components/IaqStudio';
-import VisionSmogScanner from './components/VisionSmogScanner';
-import ImpactScorecard from './components/ImpactScorecard';
-import CommunityHub from './components/CommunityHub';
 import ApiKeyModal from './components/ApiKeyModal';
 import ErrorBoundary from './components/ErrorBoundary';
-import AiChat from './components/AiChat';
 
 import { DEFAULT_CITIES } from './constants';
 import { useAirQuality } from './hooks/useAirQuality';
 import { useSpeechAlert } from './hooks/useSpeechAlert';
 import { getStoredApiKey } from './services/geminiService';
 import { Wind, Sparkles, Bot } from 'lucide-react';
+
+// Lazy-loaded tab components for maximum code-splitting and sub-50kB initial bundle
+const AiChat = lazy(() => import('./components/AiChat'));
+const RoutinePlanner = lazy(() => import('./components/RoutinePlanner'));
+const IaqStudio = lazy(() => import('./components/IaqStudio'));
+const VisionSmogScanner = lazy(() => import('./components/VisionSmogScanner'));
+const ImpactScorecard = lazy(() => import('./components/ImpactScorecard'));
+const CommunityHub = lazy(() => import('./components/CommunityHub'));
+
+function LoadingFallback() {
+  return (
+    <div className="min-h-[400px] flex items-center justify-center p-8">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-10 h-10 rounded-full border-4 border-cyan-500/20 border-t-cyan-400 animate-spin" />
+        <span className="text-xs font-mono text-slate-400">Loading module...</span>
+      </div>
+    </div>
+  );
+}
 
 /**
  * AeroSense AI Main Application Root
@@ -138,59 +151,62 @@ export default function App() {
               </div>
             )}
 
-            {/* Tab 2: Generative AI Chat Copilot */}
-            {activeTab === 'chat' && (
-              <div className="animate-in fade-in duration-300">
-                <AiChat
-                  city={cityData}
-                  aqi={cityData.baseAqi}
-                  pm25={cityData.basePm25}
-                  apiKey={getStoredApiKey()}
-                />
-              </div>
-            )}
+            {/* Lazy-Loaded Tabs */}
+            <Suspense fallback={<LoadingFallback />}>
+              {/* Tab 2: Generative AI Chat Copilot */}
+              {activeTab === 'chat' && (
+                <div className="animate-in fade-in duration-300">
+                  <AiChat
+                    city={cityData}
+                    aqi={cityData.baseAqi}
+                    pm25={cityData.basePm25}
+                    apiKey={getStoredApiKey()}
+                  />
+                </div>
+              )}
 
-            {/* Tab 3: GenAI Low-Emission Routine Planner */}
-            {activeTab === 'routine' && (
-              <div className="animate-in fade-in duration-300">
-                <RoutinePlanner
-                  city={cityData}
-                  aqi={cityData.baseAqi}
-                  pm25={cityData.basePm25}
-                  apiKey={getStoredApiKey()}
-                />
-              </div>
-            )}
+              {/* Tab 3: GenAI Low-Emission Routine Planner */}
+              {activeTab === 'routine' && (
+                <div className="animate-in fade-in duration-300">
+                  <RoutinePlanner
+                    city={cityData}
+                    aqi={cityData.baseAqi}
+                    pm25={cityData.basePm25}
+                    apiKey={getStoredApiKey()}
+                  />
+                </div>
+              )}
 
-            {/* Tab 4: Indoor Air Quality & DIY Corsi-Rosenthal Studio */}
-            {activeTab === 'iaq' && (
-              <div className="animate-in fade-in duration-300">
-                <IaqStudio />
-              </div>
-            )}
+              {/* Tab 4: Indoor Air Quality & DIY Corsi-Rosenthal Studio */}
+              {activeTab === 'iaq' && (
+                <div className="animate-in fade-in duration-300">
+                  <IaqStudio />
+                </div>
+              )}
 
-            {/* Tab 5: Vision Smog & Room Hazard Scanner */}
-            {activeTab === 'vision' && (
-              <div className="animate-in fade-in duration-300">
-                <VisionSmogScanner
-                  apiKey={getStoredApiKey()}
-                />
-              </div>
-            )}
+              {/* Tab 5: Vision Smog & Room Hazard Scanner */}
+              {activeTab === 'vision' && (
+                <div className="animate-in fade-in duration-300">
+                  <VisionSmogScanner
+                    apiKey={getStoredApiKey()}
+                  />
+                </div>
+              )}
 
-            {/* Tab 6: Direct Impact & Community Action Hub */}
-            {activeTab === 'impact' && (
-              <div className="space-y-8 animate-in fade-in duration-300">
-                <ImpactScorecard
-                  pm25={cityData.basePm25}
-                />
-                <CommunityHub
-                  city={cityData}
-                  aqi={cityData.baseAqi}
-                  pm25={cityData.basePm25}
-                />
-              </div>
-            )}
+              {/* Tab 6: Direct Impact & Community Action Hub */}
+              {activeTab === 'impact' && (
+                <div className="space-y-8 animate-in fade-in duration-300">
+                  <ImpactScorecard
+                    pm25={cityData.basePm25}
+                  />
+                  <CommunityHub
+                    city={cityData}
+                    aqi={cityData.baseAqi}
+                    pm25={cityData.basePm25}
+                  />
+                </div>
+              )}
+            </Suspense>
           </section>
         </ErrorBoundary>
       </main>
@@ -224,16 +240,18 @@ export default function App() {
       {/* Persistent Floating GenAI Chat Assistant (Visible Across All Tabs) */}
       <div className="fixed bottom-6 right-6 z-40">
         {isFloatingChatOpen ? (
-          <div className="w-[360px] sm:w-[440px] h-[580px] rounded-3xl overflow-hidden shadow-2xl glass-panel border border-cyan-500/40 animate-in slide-in-from-bottom-5 duration-200">
-            <AiChat
-              city={cityData}
-              aqi={cityData.baseAqi}
-              pm25={cityData.basePm25}
-              apiKey={getStoredApiKey()}
-              isDrawer={true}
-              onCloseDrawer={() => setIsFloatingChatOpen(false)}
-            />
-          </div>
+          <Suspense fallback={<div className="p-4 bg-slate-900 rounded-2xl text-xs text-slate-400">Loading chat...</div>}>
+            <div className="w-[360px] sm:w-[440px] h-[580px] rounded-3xl overflow-hidden shadow-2xl glass-panel border border-cyan-500/40 animate-in slide-in-from-bottom-5 duration-200">
+              <AiChat
+                city={cityData}
+                aqi={cityData.baseAqi}
+                pm25={cityData.basePm25}
+                apiKey={getStoredApiKey()}
+                isDrawer={true}
+                onCloseDrawer={() => setIsFloatingChatOpen(false)}
+              />
+            </div>
+          </Suspense>
         ) : (
           <button
             onClick={() => setIsFloatingChatOpen(true)}

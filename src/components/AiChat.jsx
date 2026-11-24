@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { 
-  Sparkles, 
   Send, 
   Bot, 
   User, 
@@ -15,8 +14,7 @@ import {
   Flame, 
   Baby, 
   Activity, 
-  Clock, 
-  MessageSquare
+  Clock
 } from 'lucide-react';
 import { sendAeroSenseChatMessage } from '../services/geminiService';
 import { speechService } from '../services/speechService';

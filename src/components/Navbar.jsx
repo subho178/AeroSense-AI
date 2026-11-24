@@ -1,5 +1,4 @@
-import React from 'react';
-import { Wind, Key, Volume2, VolumeX, Sparkles, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { Wind, Volume2, VolumeX, Sparkles } from 'lucide-react';
 import { DEFAULT_CITIES } from '../constants/data';
 import { getAqiCategory } from '../services/aqiService';
 
