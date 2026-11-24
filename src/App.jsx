@@ -11,60 +11,36 @@ import ApiKeyModal from './components/ApiKeyModal';
 import ErrorBoundary from './components/ErrorBoundary';
 import AiChat from './components/AiChat';
 
-import { DEFAULT_CITIES } from './constants/data';
-import { fetchLiveCityAirQuality } from './services/aqiService';
+import { DEFAULT_CITIES } from './constants';
+import { useAirQuality } from './hooks/useAirQuality';
+import { useSpeechAlert } from './hooks/useSpeechAlert';
 import { getStoredApiKey } from './services/geminiService';
-import { speechService } from './services/speechService';
-import { Wind, ShieldAlert, Heart, Github, Sparkles, Bot, MessageSquare } from 'lucide-react';
+import { Wind, Sparkles, Bot } from 'lucide-react';
 
+/**
+ * AeroSense AI Main Application Root
+ * Orchestrates multi-pollutant telemetry, GenAI copilots,
+ * DIY IAQ hacks, and community resilience scoreboards.
+ */
 export default function App() {
   const [selectedCity, setSelectedCity] = useState(DEFAULT_CITIES[0]);
-  const [cityData, setCityData] = useState(DEFAULT_CITIES[0]);
   const [activeTab, setActiveTab] = useState('overview');
   const [isApiKeyModalOpen, setIsApiKeyModalOpen] = useState(false);
   const [hasCustomKey, setHasCustomKey] = useState(false);
-  const [isAudioMuted, setIsAudioMuted] = useState(false);
   const [isFloatingChatOpen, setIsFloatingChatOpen] = useState(false);
 
-  // Initialize and check API key
+  // Custom Hooks for state abstraction and code quality
+  const { cityData } = useAirQuality(selectedCity);
+  const { isAudioMuted, toggleAudio, playAdvisory } = useSpeechAlert(cityData);
+
+  // Check stored API key on mount
   useEffect(() => {
     setHasCustomKey(Boolean(getStoredApiKey()));
   }, []);
 
-  // Fetch telemetry when city changes
-  useEffect(() => {
-    let isMounted = true;
-    fetchLiveCityAirQuality(selectedCity).then(data => {
-      if (isMounted) {
-        setCityData(data);
-      }
-    });
-    return () => { isMounted = false; };
-  }, [selectedCity]);
-
-  // Voice alert synthesis
-  const handlePlayVoiceAlert = () => {
-    if (isAudioMuted) return;
-
-    const locationLabel = cityData.state ? `${cityData.name}, ${cityData.state}` : cityData.name;
-    const alertText = `AeroSense AI Winter Smog Advisory for ${locationLabel}. Current Air Quality Index is ${cityData.baseAqi}, which is in the severe hazardous category. Ground-level thermal inversion is actively trapping vehicular soot and particulate matter. Please keep exterior windows sealed until the midday ventilation window between ${cityData.ventilationWindow}. Run indoor Corsi-Rosenthal filtration or HEPA purifiers continuously, and ensure vulnerable individuals avoid morning outdoor exertion.`;
-
-    speechService.speak(alertText);
-  };
-
-  const handleToggleAudio = () => {
-    if (!isAudioMuted) {
-      speechService.stop();
-      setIsAudioMuted(true);
-    } else {
-      setIsAudioMuted(false);
-      handlePlayVoiceAlert();
-    }
-  };
-
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-cyan-500 selection:text-white">
-      {/* Top Navigation */}
+      {/* Top Header Navigation */}
       <Navbar
         selectedCity={selectedCity}
         onSelectCity={setSelectedCity}
@@ -72,7 +48,7 @@ export default function App() {
         onOpenApiKeyModal={() => setIsApiKeyModalOpen(true)}
         hasCustomKey={hasCustomKey}
         isAudioMuted={isAudioMuted}
-        onToggleAudio={handleToggleAudio}
+        onToggleAudio={toggleAudio}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
       />
@@ -80,7 +56,7 @@ export default function App() {
       {/* Main Content Area wrapped in ErrorBoundary & WCAG Tabpanel */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 lg:px-8 py-6 space-y-8">
         <ErrorBoundary>
-          <div
+          <section
             role="tabpanel"
             id={`tabpanel-${activeTab}`}
             aria-labelledby={`tab-${activeTab}`}
@@ -92,7 +68,7 @@ export default function App() {
               <div className="space-y-8 animate-in fade-in duration-300">
                 <AqiOverviewCard
                   city={cityData}
-                  onPlayVoiceAlert={handlePlayVoiceAlert}
+                  onPlayVoiceAlert={playAdvisory}
                 />
 
                 <HourlyInversionChart
@@ -186,14 +162,14 @@ export default function App() {
               </div>
             )}
 
-            {/* Tab 3: Indoor Air Quality & DIY Corsi-Rosenthal Studio */}
+            {/* Tab 4: Indoor Air Quality & DIY Corsi-Rosenthal Studio */}
             {activeTab === 'iaq' && (
               <div className="animate-in fade-in duration-300">
                 <IaqStudio />
               </div>
             )}
 
-            {/* Tab 4: Vision Smog & Room Hazard Scanner */}
+            {/* Tab 5: Vision Smog & Room Hazard Scanner */}
             {activeTab === 'vision' && (
               <div className="animate-in fade-in duration-300">
                 <VisionSmogScanner
@@ -202,7 +178,7 @@ export default function App() {
               </div>
             )}
 
-            {/* Tab 5: Direct Impact & Community Action Hub */}
+            {/* Tab 6: Direct Impact & Community Action Hub */}
             {activeTab === 'impact' && (
               <div className="space-y-8 animate-in fade-in duration-300">
                 <ImpactScorecard
@@ -215,7 +191,7 @@ export default function App() {
                 />
               </div>
             )}
-          </div>
+          </section>
         </ErrorBoundary>
       </main>
 

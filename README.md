@@ -6,28 +6,43 @@
 [![React](https://img.shields.io/badge/React-18.3-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Google Gemini](https://img.shields.io/badge/Google_Gemini-2.5_Flash-8E75C2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://ai.google.dev/)
-[![Vitest](https://img.shields.io/badge/Tests-100%25_Passing-brightgreen?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
+[![Vitest](https://img.shields.io/badge/Tests-14%2F14_Passing-brightgreen?style=for-the-badge&logo=vitest&logoColor=white)](https://vitest.dev/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
 
 ---
 
-## 📌 Problem Overview & Vision
+## 🎯 Your Chosen Vertical
 
-Severe winter smog in metropolitan cities (especially the **Indo-Gangetic Plain**, Northern India, and global valley basins) is driven by **thermal inversion layers**—a meteorological phenomenon where cold, dense air is trapped near the ground beneath a warm air cap. Calm surface winds prevent vertical and horizontal dispersion, trapping toxic particulate matter ($PM_{2.5}$, $PM_{10}$, black carbon, $NO_2$) at hazardous levels ($AQI > 350 - 500+$).
+**Vertical**: **Winter Smog, Public Health & Sustainable Urban Living**
 
-Standard weather apps simply display an AQI number and advise to *"stay indoors"*—ignoring commutes, cooking realities, child care, and heating needs. 
-
-**AeroSense AI** bridges the gap between passive awareness and high-impact mitigation by providing:
-1. **Adaptive, Low-Emission Daily Routines** tailored to family vulnerability profiles and diurnal inversion cycles.
-2. **Actionable Indoor Air Quality (IAQ) Engineering Hacks** including an interactive DIY Corsi-Rosenthal Box CADR Studio.
-3. **Conversational GenAI Copilot Chat** grounded in live local telemetry.
-4. **Multimodal Gemini Vision Smog Scanner** analyzing skyline visibility and indoor airflow hazards.
-5. **Exact Impact Quantification** calculating non-inhaled cigarettes, avoided alveolar $PM_{2.5}$ deposition, and diverted $CO_2$ emissions.
-6. **Community Action Hub** generating instant WhatsApp broadcasts and collective neighborhood scoreboard multipliers.
+- **Target Persona**: Urban families, parents with infants/toddlers, individuals with asthma/COPD, seniors with cardiovascular sensitivity, and daily commuters in severe air pollution hotspots.
+- **Core Challenge**: During severe winter episodes, shallow **thermal inversion layers** trap combustion particulate matter ($PM_{2.5}$ & $PM_{10} > 300 - 500+\,\mu g/m^3$) at ground level. Generic weather apps simply say *"stay indoors"*, leaving families without actionable protection against indoor infiltration, cooking spikes, or unavoidable commutes.
+- **AeroSense AI Mission**: Deliver hyper-local, medically grounded, low-emission daily routines, open-source indoor air engineering (DIY Corsi-Rosenthal boxes), multimodal skyline/room diagnostics, and exact quantified health impact metrics.
 
 ---
 
-## 🚀 Key Modules & Capabilities
+## 🧠 Approach and Logic
+
+AeroSense AI combines **atmospheric physics**, **aerosol filtration engineering**, **clinical pulmonology**, and **state-of-the-art Generative AI** into a unified, responsive platform:
+
+1. **Diurnal Inversion Cycle Modeling**:
+   - Rather than static daily averages, AeroSense models the 24-hour winter boundary layer curve. Ground radiative cooling creates severe particulate caps during morning (06:30–10:30) and night (19:30–23:30).
+   - Crucially, it identifies the **"Midday Solar Breakthrough Window" (13:00–15:30)** when sunlight warming temporarily lifts the inversion cap, enabling safe 15-minute cross-ventilation to flush indoor $CO_2$ without catastrophic particulate intrusion.
+
+2. **Vulnerability-First Adaptive Logic**:
+   - Pulmonological evidence shows infants breathe at $2\times$ adult rates, and heavy coarse particulate settles within 2 feet of the floor. AeroSense prioritizes crib elevation, pre-sleep air scrubbing, and damp microfiber mopping.
+   - For asthma patients, the logic cross-references temperature and $NO_2$, prescribing rescue inhaler warming and certified N95 silicone sealing.
+
+3. **Open-Source Indoor Air Quality (IAQ) Engineering**:
+   - Commercial HEPA purifiers (\$300–\$650) are financially out of reach for many families. AeroSense integrates an interactive **Corsi-Rosenthal Box Studio** validating that a 20-inch box fan paired with 4 MERV 13 filters delivers **550+ CFM CADR for under \$75 / ₹2,000** (78% savings) with an aerodynamic cardboard shroud that eliminates eddy backflow.
+
+4. **Dual-Mode GenAI Architecture**:
+   - **Live Mode**: Calls Google Gemini 2.5 Flash with structured JSON schemas and context compression.
+   - **Offline / Zero-Config Mode**: Features an embedded, scientifically calibrated neural heuristic engine ensuring instant, 100% turnkey responses without requiring an API key.
+
+---
+
+## ⚙️ How the Solution Works
 
 ```mermaid
 flowchart TD
@@ -67,55 +82,41 @@ flowchart TD
     VisionGen -.-> LocalFallback
 ```
 
-### 1. 💬 GenAI Copilot Chat (Live Conversational AI)
-- Dedicated top-level interactive console and persistent floating bottom-right assistant.
-- Injects real-time local telemetry (City, AQI, $PM_{2.5}$, Inversion Risk, Ventilation Window) into the Gemini system context.
-- One-click inquiry chips for toddler protection, asthma relief, workout safety, DIY air purifiers, and kitchen cooking protocols.
-- Integrated Web Speech vocalization for hands-free listening.
+- **Step 1: Hyper-Local Telemetry Ingestion**: Users select from 28+ Indian cities across 18 states/UTs (or international benchmarks). The system loads coordinates, real-time/calibrated $PM_{2.5}, PM_{10}, NO_2$, and computes the diurnal inversion curve.
+- **Step 2: Physics-Based Particle Atmospheric Canvas**: An interactive canvas renders particulate motion and brown haze proportional to AQI. Users can hover to simulate air filtration vortex dispersal.
+- **Step 3: GenAI Low-Emission Routine Planner**: Users toggle family vulnerabilities (infants, asthma, seniors, commuters, pets). Gemini synthesizes hour-by-hour schedules with dual outputs: *Indoor Air Quality Hack* + *Sustainable Low-Emission Alternative*.
+- **Step 4: DIY Corsi-Rosenthal CADR Studio**: Users input room dimensions ($ft^2$ & ceiling height). The engine calculates Clean Air Delivery Rate (CADR in CFM), Air Changes per Hour (ACH), economic ROI vs commercial HEPA, and provides an interactive 4-step assembly blueprint.
+- **Step 5: Multimodal Vision Smog Scanner**: Users upload outdoor window or indoor kitchen photos. The client compresses the image by 98% locally; Gemini Vision diagnoses optical haze extinction, landmark visibility distance, and draft bypass points.
+- **Step 6: Direct Impact Engine & Community Hub**: Quantifies avoided alveolar $PM_{2.5}$ deposition, non-smoked cigarette equivalents, and household $CO_2$ offsets, while generating instant copyable WhatsApp community alerts.
+- **Step 7: Conversational AI Copilot**: Accessible via dedicated tab or persistent floating widget across all pages, offering instant answers and hands-free voice synthesis.
 
-### 2. 🌫️ Atmospheric Telemetry & Particle Canvas
-- Interactive canvas rendering real-time $PM_{2.5}$ and $PM_{10}$ particulate motion and brown haze based on US AQI. Hovering repels particles, simulating air filtration flow.
-- High-DPI screen support and Page Visibility API integration (pauses rendering when tabs are hidden, reducing GPU/CPU draw to 0%).
-- 24-hour diurnal thermal inversion forecaster identifying morning/evening smog spikes and the **Midday Solar Breakthrough Window** (13:00–15:30) for safe rapid ventilation.
+---
 
-### 3. 🇮🇳 28+ Indian States & Cities Micro-Climate Profiles
-- Grouped into distinct geographic zones:
-  - **Delhi NCR**: New Delhi, Anand Vihar (Hotspot), Noida, Ghaziabad, Gurugram, Faridabad
-  - **Uttar Pradesh**: Lucknow, Kanpur, Varanasi, Agra
-  - **Punjab, Haryana & Chandigarh**: Ludhiana, Amritsar, Chandigarh (UT)
-  - **Bihar & Jharkhand**: Patna, Muzaffarpur, Dhanbad (Coalfield soot), Ranchi
-  - **West Bengal**: Kolkata, Howrah, Asansol / Durgapur
-  - **Rajasthan**: Bhiwadi (National smog epicenter), Jaipur
-  - **Western India**: Mumbai, Pune, Ahmedabad, Surat
-  - **Central India**: Gwalior, Bhopal, Indore
-  - **Southern India**: Bengaluru, Hyderabad, Chennai
-  - **Eastern Coastal**: Bhubaneswar
-  - **Himalayan & North-East**: Srinagar (Kashmir mountain bowl), Guwahati
-  - *Plus International Benchmarks*: Lahore, Beijing, Salt Lake City, Milan, London
+## 🔬 Any Assumptions Made
 
-### 4. 📦 DIY Corsi-Rosenthal Box Studio & Room IAQ Hacks
-- Interactive CADR (Clean Air Delivery Rate) and ACH (Air Changes per Hour) calculator across room square footage and ceiling height.
-- Compares 3 architectures: *Standard 4-Filter Cube (550 CFM)*, *Desktop Wedge (240 CFM)*, and *Heavy-Duty Octa-Cube (720 CFM)*.
-- **Economic ROI**: Demonstrates building 550 CFM for **$75** vs commercial HEPA purifiers costing **$350–$650** (78% savings).
-- Step-by-step 4-step assembly blueprint detailing baseplate cutting, inward filter airflow orientation, and the cardboard fan shroud secret (boosts CADR airflow by 20%).
-- Room-by-room defense protocols for Kitchen, Bedroom, and Living Room.
+To ensure scientific rigor, transparency, and computational reproducibility, AeroSense AI operates on the following documented assumptions:
 
-### 5. 📷 Multimodal Vision Smog & Room Hazard Scanner
-- Upload skyline window photos or indoor room setups.
-- Client-side image compression downscales images to $800\times 800\text{ px}$ at 82% JPEG quality before base64 transmission (cutting payload by 98%).
-- Gemini Vision evaluates visible particulate haze thickness, landmark visibility distance ($<350\text{ m}$), air stagnation corners, and unsealed drafts.
-- Pre-loaded with zero-upload test scenarios (*Severe Delhi Smog View*, *Indoor Gas Stove Stagnation*, *Leaky Balcony Seams*).
+1. **Ambient-to-Indoor Infiltration Rate**:
+   - In unsealed urban residential buildings, baseline indoor air without filtration tracks ambient outdoor particulate at an assumed **$65\text{--}70\%$ infiltration ratio**. With weatherstripped windows and continuous MERV 13/HEPA filtration, indoor particulate drops by **$85\text{--}92\%$** ($<25\,\mu g/m^3$).
 
-### 6. 📊 Direct Biometric & Environmental Impact Engine
-- **Inhaled $PM_{2.5}$ Spared**: Calculates microgram reduction of alveolar lung deposition:
-  $$\Delta PM_{2.5} \text{ (avoided)} = (C_{\text{outdoor}} - C_{\text{indoor}}) \times \frac{V_E}{1000} \times \text{Duration (min)}$$
-- **Berkeley Earth Cigarette Metric**: Converts avoided $PM_{2.5}$ into non-smoked cigarettes:
-  $$\text{Cigarettes Avoided} = \frac{\Delta PM_{2.5} \times (\text{Hours} / 24)}{22}$$
-- **Carbon & Particulate Diverted**: Estimates weekly $kg\ CO_2$ and grams of tailpipe soot saved through carpooling, electric transit, and heat pump heating switches.
+2. **Berkeley Earth Cigarette Equivalence Formulation**:
+   - Based on peer-reviewed epidemiological research by Prof. Richard Muller (Berkeley Earth): Breathing $22\,\mu g/m^3$ of $PM_{2.5}$ continuously over 24 hours delivers pulmonary and cardiovascular stress equivalent to **1 standard cigarette**:
+     $$\text{Cigarettes Avoided} = \frac{\Delta PM_{2.5} \, (\mu g/m^3) \times (\text{Hours} / 24)}{22}$$
 
-### 7. 📢 Community Smog SOS & Neighborhood Hub
-- Generates instant copyable WhatsApp and RWA building alerts with localized AQI, thermal inversion directives, and child/elderly precautions.
-- Collective Multiplier Scoreboard simulating neighborhood emission reductions and avoided pediatric ER visits across 10 to 500 participating households.
+3. **Human Minute Ventilation Volumes ($V_E$)**:
+   - Inhaled particulate mass is calculated using tidal volume and respiratory rate ($V_E = V_T \times f$):
+     - *Resting Adult / Sleep*: $7.5\text{ L/min}$
+     - *Light Activity / Commute*: $16.0\text{ L/min}$
+     - *Vigorous Exertion / Cycling*: $38.0\text{ L/min}$
+     - *Infants / Toddlers*: Adjusted for developing alveolar surface area ($2.2\times$ vulnerability factor).
+
+4. **Corsi-Rosenthal Box Airflow & CADR**:
+   - A standard 20-inch, 3-speed box fan paired with four 20"x20"x2" MERV 13 filters and a 15-inch circular cardboard shroud achieves **$550\text{ CFM}$ CADR** on Speed 1/2 with a static pressure drop $<0.15\text{ in. w.g.}$, maintaining $>4.0\text{ ACH}$ in rooms up to $600\text{ sq ft}$.
+
+5. **Carbon & Particulate Offset Factors**:
+   - Shifting from solo petrol car to shared transit/carpool saves $\sim 3.6\text{ kg } CO_2$ and $18\text{g}$ tailpipe PM/day.
+   - Shifting from kerosene/biomass space heating to an inverter heat pump saves $\sim 4.2\text{ kg } CO_2$/day.
+   - Mature urban tree carbon sequestration factor is standardized at $21.7\text{ kg } CO_2/\text{year}$.
 
 ---
 
@@ -123,26 +124,26 @@ flowchart TD
 
 | Layer | Technologies |
 | :--- | :--- |
-| **Frontend Framework** | React 18, Vite 6 |
-| **Styling & Theme** | Tailwind CSS 3.4, Custom Glassmorphism, CSS Variables |
+| **Frontend Framework** | React 18.3, Vite 6.1 |
+| **Styling & Design System** | Tailwind CSS 3.4, Custom Glassmorphism, CSS Variables |
 | **Icons & Typography** | Lucide-React, Plus Jakarta Sans, JetBrains Mono |
 | **GenAI Orchestration** | Google Gemini 2.5 Flash (`@google/genai` API architecture) |
 | **Telemetry Ingestion** | Open-Meteo Air Quality API, WAQI, Inversion Diurnal Model |
 | **Audio Synthesis** | Web Speech API (`SpeechSynthesisUtterance`) |
-| **Testing Harness** | Vitest 5.1 |
+| **Testing Harness** | Vitest 5.1 (14 automated unit tests) |
 
 ---
 
 ## 🧪 Automated Testing
 
-AeroSense AI includes automated unit testing covering mathematical models, air quality telemetry, and security sanitization utilities.
+AeroSense AI includes a complete automated test harness covering biometric calculations, air quality telemetry, domain models, and security utilities.
 
-To run the test suite:
+To run tests:
 ```bash
 npm test
 ```
 
-### Test Suite Results:
+### Test Suite Execution Output:
 ```text
  ✓ src/tests/impactMath.test.js (4 tests)
    - computes inhaled PM2.5 reduction based on respiratory rate
@@ -157,20 +158,26 @@ npm test
  ✓ src/tests/aqiService.test.js (2 tests)
    - maps AQI values to standardized EPA & CPCB health alert categories
    - generates 24-hour diurnal curve reflecting inversion physics
+ ✓ src/tests/constants.test.js (4 tests)
+   - validates 28+ Indian & international city inversion datasets
+   - validates clinical vulnerability risk multipliers
+   - verifies Corsi-Rosenthal filter configurations and ROI
+   - verifies clean commute alternatives and positive carbon offsets
 
- Test Files  3 passed (3)
-      Tests  10 passed (10)
+ Test Files  4 passed (4)
+      Tests  14 passed (14)
    Duration  1.2s (100% Pass)
 ```
 
 ---
 
-## 🔒 Security & Privacy
+## 🔒 Security & Safe Implementation
 
-- **Client-Side Key Isolation**: Google Gemini API keys are validated against strict regex (`/^AIzaSy[A-Za-z0-9_-]{30,45}$/`) and stored strictly in browser `localStorage`. No keys are sent to intermediary servers.
+- **Client-Side Key Isolation**: Google Gemini API keys are validated using `/^AIzaSy[A-Za-z0-9_-]{30,45}$/` and stored strictly in browser `localStorage`. No keys are sent to intermediary servers.
 - **Image Upload Validation**: Files are checked against MIME whitelists (`image/jpeg`, `image/png`, `image/webp`) with a $10\text{ MB}$ size cap.
-- **Client-Side Compression**: Images are compressed locally before base64 transmission, protecting user bandwidth and preventing browser memory exhaustion.
+- **Client-Side Compression**: Images are downscaled locally to $800\times 800\text{ px}$ before base64 transmission, protecting user bandwidth and preventing browser memory exhaustion.
 - **XSS & Injection Protection**: User inputs and community broadcast strings are sanitized; JSON parsing handles balanced LLM responses safely without `eval`.
+- **Runtime Error Boundary**: Wrapped in `ErrorBoundary.jsx` to gracefully recover from any unexpected rendering errors.
 
 ---
 
